@@ -1,5 +1,6 @@
 module DSG.Domain.Task
   ( Task(..)
+  , TaskId
   , mkTask
   , sortTasksNewestFirst
   , sortTasksOldestFirst
@@ -13,15 +14,17 @@ import Data.Text (Text)
 import qualified Data.UUID.V4 as V4UUID
 import Data.UUID (UUID)
 
+newtype TaskId = TaskId { unwrapTaskId :: UUID }
+  deriving (Show)
 data Task = Task
-  { taskId :: UUID
+  { taskId :: TaskId
   , taskDescription :: Text
   , createdAt :: UTCTime
   }
   deriving (Show)
 
 instance Eq Task where
-  x == y = taskId x == taskId y
+  x == y = unwrapTaskId (taskId x) == unwrapTaskId (taskId y)
   x /= y = not (x == y)
 
 instance Ord Task where
@@ -32,7 +35,7 @@ mkTask desc = do
   id <- V4UUID.nextRandom
   now <- Time.getCurrentTime 
   pure $ Task
-    { taskId = id
+    { taskId = TaskId id
     , taskDescription = desc
     , createdAt = now
     }
