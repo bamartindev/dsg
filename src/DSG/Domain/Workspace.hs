@@ -1,5 +1,6 @@
 module DSG.Domain.Workspace
   ( Workspace(..)
+  , WorkspaceId
   , mkWorkspace
   , completeCurrentTask
   , swapCurrentTask
@@ -14,8 +15,11 @@ import Data.UUID (UUID)
 import DSG.Domain.Task (Task(taskId))
 import DSG.Domain.Backlog (mkBacklog, updateBacklogWithStrategy, BacklogStrategy (BacklogStrategyOldest), Backlog)
 
+newtype WorkspaceId = WorkspaceId { unwrapWorkspaceId :: UUID }
+  deriving (Show, Eq)
+
 data Workspace = Workspace
-  { workspaceId :: UUID
+  { workspaceId :: WorkspaceId
   , workspaceName :: Text
   , currentTask :: Maybe Task
   , completedTasks :: [Task]
@@ -27,7 +31,7 @@ mkWorkspace :: Text -> IO Workspace
 mkWorkspace name = do
   id <- V4UUID.nextRandom
   pure $ Workspace 
-    { workspaceId = id
+    { workspaceId = WorkspaceId id
     , workspaceName = name
     , currentTask = Nothing
     , completedTasks = []
