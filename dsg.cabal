@@ -27,6 +27,7 @@ library
   exposed-modules:
       DSG.Domain.Backlog
       DSG.Domain.Task
+      DSG.Domain.TaskPriority
       DSG.Domain.Workspace
   other-modules:
       Paths_dsg
@@ -65,6 +66,7 @@ test-suite dsg-test
   main-is: Spec.hs
   other-modules:
       DSG.Domain.BacklogSpec
+      DSG.Domain.TaskPrioritySpec
       DSG.Domain.TaskSpec
       DSG.Domain.WorkspaceSpec
       Paths_dsg
