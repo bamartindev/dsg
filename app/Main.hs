@@ -1,6 +1,6 @@
 module Main where
 
+import DSG.UI.TUI (run)
+
 main :: IO ()
-main = do 
-  putStrLn "Daily Standup Generator (DSG) v0.1.0"
-        
+main = run
