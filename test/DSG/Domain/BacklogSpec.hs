@@ -61,7 +61,7 @@ spec = do
 
       let backlog = Backlog {backlogTasks = [first, second], backlogStrategy = BacklogStrategyOldest }
       let expected = Backlog {backlogTasks = [third, first, second], backlogStrategy = BacklogStrategyOldest }
-      let result = addTaskToBacklog third backlog
+      let result = addTaskToBacklog backlog third
 
       result `shouldBe` expected
 
@@ -76,10 +76,8 @@ spec = do
       let backlog = mkBacklog BacklogStrategyOldest
 
       -- updating the backlog with second, fourth, third, then first
-      let backlog' = addTaskToBacklogWithStrategy first 
-                      $ addTaskToBacklogWithStrategy third 
-                      $ addTaskToBacklogWithStrategy fourth 
-                      $ addTaskToBacklogWithStrategy second backlog 
+      let tasks = [second, fourth, third, first]
+      let backlog' = foldl addTaskToBacklogWithStrategy backlog tasks
 
       backlog' `shouldBe` expected
 
@@ -93,10 +91,8 @@ spec = do
       let backlog = mkBacklog BacklogStrategyNewest
 
       -- updating the backlog with second, first, third, then fourth
-      let backlog' = addTaskToBacklogWithStrategy fourth 
-                      $ addTaskToBacklogWithStrategy third 
-                      $ addTaskToBacklogWithStrategy first 
-                      $ addTaskToBacklogWithStrategy second backlog 
+      let tasks = [second, first, third, fourth]
+      let backlog' = foldl addTaskToBacklogWithStrategy backlog tasks
 
       backlog' `shouldBe` expected
     
@@ -110,12 +106,9 @@ spec = do
       let expected = Backlog {backlogTasks = [first, fifth, fourth, third, second], backlogStrategy = BacklogStrategyHighestPriority }
       let backlog = mkBacklog BacklogStrategyHighestPriority
 
-      -- updating the backlog with second, first, third, then fourth
-      let backlog' = addTaskToBacklogWithStrategy fourth 
-                      $ addTaskToBacklogWithStrategy third
-                      $ addTaskToBacklogWithStrategy fifth
-                      $ addTaskToBacklogWithStrategy first 
-                      $ addTaskToBacklogWithStrategy second backlog 
+      -- updating the backlog with second, first, fifth, third, then fourth
+      let tasks = [second, first, fifth, third, fourth]
+      let backlog' = foldl addTaskToBacklogWithStrategy backlog tasks
 
       backlog' `shouldBe` expected
 
@@ -129,11 +122,8 @@ spec = do
       let expected = Backlog {backlogTasks = [second, third, fourth, fifth, first], backlogStrategy = BacklogStrategyLowestPriority }
       let backlog = mkBacklog BacklogStrategyLowestPriority
 
-      -- updating the backlog with second, first, third, then fourth
-      let backlog' = addTaskToBacklogWithStrategy fourth 
-                      $ addTaskToBacklogWithStrategy third
-                      $ addTaskToBacklogWithStrategy fifth
-                      $ addTaskToBacklogWithStrategy first 
-                      $ addTaskToBacklogWithStrategy second backlog 
+      -- updating the backlog with second, first, fifth, third, then fourth
+      let tasks = [second, first, fifth, third, fourth]
+      let backlog' = foldl addTaskToBacklogWithStrategy backlog tasks
 
       backlog' `shouldBe` expected

@@ -29,7 +29,7 @@ spec = do
         ws <- mkWorkspace "Test Workspace"
         task <- mkTask "new task" TaskPriorityNone
 
-        let (task', ws') = swapCurrentTask task ws
+        let (task', ws') = swapCurrentTask ws task
 
         task' `shouldBe` Nothing
         currentTask ws' `shouldBe` Just task
@@ -40,8 +40,8 @@ spec = do
         task <- mkTask "new task" TaskPriorityNone
         anotherTask <- mkTask "another task" TaskPriorityNone
 
-        let (Nothing, ws') = swapCurrentTask task ws
-        let (task', ws'') = swapCurrentTask anotherTask ws'
+        let (Nothing, ws') = swapCurrentTask ws task
+        let (task', ws'') = swapCurrentTask ws' anotherTask 
 
         task' `shouldBe` Just task
         currentTask ws'' `shouldBe` Just anotherTask
@@ -59,7 +59,7 @@ spec = do
         ws <- mkWorkspace "Test Workspace"
         task <- mkTask "the task" TaskPriorityNone
 
-        let (Nothing, ws') = swapCurrentTask task ws
+        let (Nothing, ws') = swapCurrentTask ws task
         let result = completeCurrentTask ws'
 
         currentTask result `shouldBe` Nothing
@@ -72,12 +72,11 @@ spec = do
         first <- mkTask "first task" TaskPriorityNone
         second <- mkTask "second task" TaskPriorityNone
         third <- mkTask "third task" TaskPriorityNone
-
-        let expected = [first, second, third]
-        -- adding in the order second, first, third to make sure the sorting is also working
-        let result = addTaskToWorkspaceWithStrategy third 
-                      $ addTaskToWorkspaceWithStrategy first 
-                      $ addTaskToWorkspaceWithStrategy second ws
         
+        -- adding in the order second, first, third to make sure the sorting is also working
+        let tasks = [second, first, third]
+        let result = foldl addTaskToWorkspaceWithStrategy ws tasks
+        
+        let expected = [first, second, third]
         (backlogTasks . workspaceBacklog) result `shouldBe` expected
 
