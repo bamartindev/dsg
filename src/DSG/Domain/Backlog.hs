@@ -43,13 +43,13 @@ setBacklogStrategyAndUpdate b strategy = applyBacklogStrategy (setBacklogStrateg
 
 -- |Takes a 'Task' and a 'Backlog' and adds the 'Task' to the front of the list of
 -- backlog tasks.
-addTaskToBacklog :: Task -> Backlog -> Backlog
-addTaskToBacklog t b = b {backlogTasks = t : backlogTasks b}
+addTaskToBacklog :: Backlog -> Task -> Backlog
+addTaskToBacklog b t= b {backlogTasks = t : backlogTasks b}
 
 -- |Takes a 'Task' and a 'Backlog' and adds the 'Task' to the list of backlog tasks,
 -- then applies the backlog strategy for ordering the tasks.
-addTaskToBacklogWithStrategy :: Task -> Backlog -> Backlog
-addTaskToBacklogWithStrategy t b = applyBacklogStrategy b {backlogTasks = preStrategyBacklog}
+addTaskToBacklogWithStrategy :: Backlog -> Task -> Backlog
+addTaskToBacklogWithStrategy b t = applyBacklogStrategy b {backlogTasks = preStrategyBacklog}
   where
     preStrategyBacklog = t : backlogTasks b
 

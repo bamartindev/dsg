@@ -50,14 +50,14 @@ completeCurrentTask ws = case currentTask ws of
 
 -- |Takes a 'Task' and 'Workspace', then returns a tuple with the previous
 -- current task if one exists, and a new 'Workspace' with the supplie 'Task' as the current task.
-swapCurrentTask :: Task -> Workspace -> (Maybe Task, Workspace)
-swapCurrentTask t ws = case currentTask ws of
+swapCurrentTask :: Workspace -> Task -> (Maybe Task, Workspace)
+swapCurrentTask ws t = case currentTask ws of
   Nothing -> (Nothing, ws {currentTask = pure t})
   Just task -> (pure task, ws {currentTask = pure t})
 
 -- |Takes a 'Task' and 'Workspace' and adds it to the end of the task backlog
-addTaskToWorkspaceWithStrategy :: Task -> Workspace -> Workspace
-addTaskToWorkspaceWithStrategy t ws = ws {workspaceBacklog = updatedBacklog}
+addTaskToWorkspaceWithStrategy :: Workspace -> Task -> Workspace
+addTaskToWorkspaceWithStrategy ws t = ws {workspaceBacklog = updatedBacklog}
   where
-    updatedBacklog = addTaskToBacklogWithStrategy t (workspaceBacklog ws)
+    updatedBacklog = addTaskToBacklogWithStrategy (workspaceBacklog ws) t
 
