@@ -27,8 +27,11 @@ library
   exposed-modules:
       DSG.Domain.Backlog
       DSG.Domain.Task
+      DSG.Domain.TaskId
       DSG.Domain.TaskPriority
       DSG.Domain.Workspace
+      DSG.Domain.WorkspaceId
+      DSG.Persistence.SQLite
   other-modules:
       Paths_dsg
   hs-source-dirs:
@@ -38,6 +41,7 @@ library
   build-depends:
       base >=4.7 && <5
     , hspec
+    , sqlite-simple
     , text
     , time
     , uuid
@@ -56,6 +60,7 @@ executable dsg-exe
       base >=4.7 && <5
     , dsg
     , hspec
+    , sqlite-simple
     , text
     , time
     , uuid
@@ -79,6 +84,7 @@ test-suite dsg-test
       base >=4.7 && <5
     , dsg
     , hspec
+    , sqlite-simple
     , text
     , time
     , uuid

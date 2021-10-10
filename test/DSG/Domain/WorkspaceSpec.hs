@@ -27,7 +27,7 @@ spec = do
     describe "without a current task" $ do
       it "should set the provided Task as the current task in the Workspace, and return Nothing for the previous task" $ do
         ws <- mkWorkspace "Test Workspace"
-        task <- mkTask "new task" TaskPriorityNone
+        task <- mkTask (workspaceId ws) "new task" TaskPriorityNone
 
         let (task', ws') = swapCurrentTask ws task
 
@@ -37,8 +37,8 @@ spec = do
     describe "with a current task" $ do
       it "should set the provided Task as the current task in the Workspace, and return Maybe Task for the previous task" $ do
         ws <- mkWorkspace "Test Workspace"
-        task <- mkTask "new task" TaskPriorityNone
-        anotherTask <- mkTask "another task" TaskPriorityNone
+        task <- mkTask (workspaceId ws) "new task" TaskPriorityNone
+        anotherTask <- mkTask (workspaceId ws) "another task" TaskPriorityNone
 
         let (Nothing, ws') = swapCurrentTask ws task
         let (task', ws'') = swapCurrentTask ws' anotherTask 
@@ -57,7 +57,7 @@ spec = do
     describe "with a current task" $ do
       it "should add the current task to completed tasks, and set the current task to Nothing" $ do
         ws <- mkWorkspace "Test Workspace"
-        task <- mkTask "the task" TaskPriorityNone
+        task <- mkTask (workspaceId ws) "the task" TaskPriorityNone
 
         let (Nothing, ws') = swapCurrentTask ws task
         let result = completeCurrentTask ws'
@@ -69,9 +69,9 @@ spec = do
     describe "working with default backlog setup" $ do
       it "should add tasks to the backlog" $ do
         ws <- mkWorkspace "Test Workspace"
-        first <- mkTask "first task" TaskPriorityNone
-        second <- mkTask "second task" TaskPriorityNone
-        third <- mkTask "third task" TaskPriorityNone
+        first <- mkTask (workspaceId ws) "first task" TaskPriorityNone
+        second <- mkTask (workspaceId ws) "second task" TaskPriorityNone
+        third <- mkTask (workspaceId ws) "third task" TaskPriorityNone
         
         -- adding in the order second, first, third to make sure the sorting is also working
         let tasks = [second, first, third]
