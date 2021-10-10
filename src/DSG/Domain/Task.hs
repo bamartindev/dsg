@@ -1,6 +1,5 @@
 module DSG.Domain.Task
   ( Task(..)
-  , TaskId
   , mkTask
   , sortTasksNewestFirst
   , sortTasksOldestFirst
@@ -17,15 +16,17 @@ import Data.Time (UTCTime)
 import Data.Text (Text)
 import qualified Data.UUID.V4 as V4UUID
 import Data.UUID (UUID)
-
+import Database.SQLite.Simple( FromRow(..), ToRow(..), field)
+import DSG.Domain.WorkspaceId (WorkspaceId)
+import DSG.Domain.TaskId (TaskId(..))
 import DSG.Domain.TaskPriority (TaskPriority)
 
-newtype TaskId = TaskId { unwrapTaskId :: UUID }
-  deriving (Show)
 data Task = Task
   { taskId :: TaskId
+  , wsId :: WorkspaceId
   , taskDescription :: Text
   , taskPriority :: TaskPriority
+  , taskCompleted :: Bool
   , createdAt :: UTCTime
   }
   deriving (Show)
@@ -37,14 +38,22 @@ instance Eq Task where
 instance Ord Task where
   x `compare` y = createdAt x `compare` createdAt y
 
-mkTask :: Text -> TaskPriority -> IO Task
-mkTask desc priority = do
+instance FromRow Task where
+  fromRow = Task <$> field <*> field <*> field <*> field <*> field <*> field
+
+instance ToRow Task where
+  toRow (Task id_ workspace desc prio completed createdAt) = toRow (id_, workspace, desc, prio, completed, createdAt)
+
+mkTask :: WorkspaceId -> Text -> TaskPriority -> IO Task
+mkTask wsId desc priority = do
   id <- V4UUID.nextRandom
   now <- Time.getCurrentTime 
   pure $ Task
     { taskId = TaskId id
+    , wsId = wsId
     , taskDescription = desc
     , taskPriority = priority
+    , taskCompleted = False
     , createdAt = now
     }
 

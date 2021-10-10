@@ -1,6 +1,5 @@
 module DSG.Domain.Workspace
   ( Workspace(..)
-  , WorkspaceId
   , mkWorkspace
   , completeCurrentTask
   , swapCurrentTask
@@ -11,12 +10,11 @@ where
 import Data.Text (Text)
 import qualified Data.UUID.V4 as V4UUID
 import Data.UUID (UUID)
+import Database.SQLite.Simple( FromRow(..), ToRow(..), field)
 
+import DSG.Domain.WorkspaceId (WorkspaceId(..))
 import DSG.Domain.Task (Task(taskId))
 import DSG.Domain.Backlog (mkBacklog, addTaskToBacklogWithStrategy, BacklogStrategy (BacklogStrategyOldest), Backlog)
-
-newtype WorkspaceId = WorkspaceId { unwrapWorkspaceId :: UUID }
-  deriving (Show, Eq)
 
 data Workspace = Workspace
   { workspaceId :: WorkspaceId
@@ -26,6 +24,12 @@ data Workspace = Workspace
   , workspaceBacklog :: Backlog 
   }
   deriving (Show, Eq)
+
+-- instance FromRow Workspace where
+--   fromRow = Workspace <$> field <*> field <*> field <*> field <*> field
+
+-- instance ToRow Workspace where
+--   toRow (Workspace id_ name current completed backlog) = toRow (id_, name, current, completed, backlog)
 
 mkWorkspace :: Text -> IO Workspace
 mkWorkspace name = do

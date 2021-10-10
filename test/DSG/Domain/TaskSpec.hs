@@ -7,21 +7,27 @@ import Test.Hspec ( Spec, describe, it, shouldBe )
 
 import DSG.Domain.Task (Task(..), mkTask, sortTasksNewestFirst, sortTasksOldestFirst, sortTasksHighestPriorityFirst, sortTasksLowestPriorityFirst, filterTasksByPriority, filterTasksWithoutPriority)
 import DSG.Domain.TaskPriority (TaskPriority(..))
+import DSG.Domain.WorkspaceId (WorkspaceId(..))
+import Data.UUID as UUID
+import Data.Maybe (fromJust)
+
+dummyWorkspaceId :: WorkspaceId
+dummyWorkspaceId = WorkspaceId $ fromJust $ UUID.fromString "36b435ee-ac09-42a9-acb6-3bcd4d9461f7"
 
 spec :: Spec
 spec = do
   describe "mkTask" $ do
     it "creates a new Task with the provided description" $ do
-      task <- mkTask "Test creating a new task" TaskPriorityNone
+      task <- mkTask dummyWorkspaceId "Test creating a new task" TaskPriorityNone
 
       taskDescription task `shouldBe` "Test creating a new task"
 
   describe "sortTasksNewestFirst" $ do
     it "takes an unsorted list of Tasks and sorts by createdAt, newest first" $ do
-      first <- mkTask "first task" TaskPriorityNone
-      second <- mkTask "second task" TaskPriorityNone
-      third <- mkTask "third task" TaskPriorityNone
-      fourth <- mkTask "fourth task" TaskPriorityNone
+      first <- mkTask dummyWorkspaceId "first task" TaskPriorityNone
+      second <- mkTask dummyWorkspaceId "second task" TaskPriorityNone
+      third <- mkTask dummyWorkspaceId "third task" TaskPriorityNone
+      fourth <- mkTask dummyWorkspaceId "fourth task" TaskPriorityNone
 
       let tasks = [second, fourth, first, third]
       let expected = [fourth, third, second, first]
@@ -30,10 +36,10 @@ spec = do
 
   describe "sortTasksOlderFirst" $ do
     it "takes an unsorted list of Tasks and sorts by createdAt, oldest first" $ do
-      first <- mkTask "first task" TaskPriorityNone
-      second <- mkTask "second task" TaskPriorityNone
-      third <- mkTask "third task" TaskPriorityNone
-      fourth <- mkTask "fourth task" TaskPriorityNone
+      first <- mkTask dummyWorkspaceId "first task" TaskPriorityNone
+      second <- mkTask dummyWorkspaceId "second task" TaskPriorityNone
+      third <- mkTask dummyWorkspaceId "third task" TaskPriorityNone
+      fourth <- mkTask dummyWorkspaceId "fourth task" TaskPriorityNone
 
       let tasks = [second, fourth, first, third]
       let expected = [first, second, third, fourth]
@@ -42,10 +48,10 @@ spec = do
 
   describe "sortTasksHighestPriorityFirst" $ do
     it "takes an unsorted list of Tasks and sorts by taskPriority, highest first" $ do
-      first <- mkTask "first task" TaskPriorityMedium 
-      second <- mkTask "second task" TaskPriorityUrgent
-      third <- mkTask "third task" TaskPriorityLow
-      fourth <- mkTask "fourth task" TaskPriorityHigh
+      first <- mkTask dummyWorkspaceId "first task" TaskPriorityMedium 
+      second <- mkTask dummyWorkspaceId "second task" TaskPriorityUrgent
+      third <- mkTask dummyWorkspaceId "third task" TaskPriorityLow
+      fourth <- mkTask dummyWorkspaceId "fourth task" TaskPriorityHigh
 
       let tasks = [first, second, third, fourth]
       let expected = [second, fourth, first, third]
@@ -54,10 +60,10 @@ spec = do
 
   describe "sortTasksLowestPriorityFirst" $ do
     it "takes an unsorted list of Tasks and sorts by taskPriority, lowest first" $ do
-      first <- mkTask "first task" TaskPriorityMedium 
-      second <- mkTask "second task" TaskPriorityUrgent
-      third <- mkTask "third task" TaskPriorityLow
-      fourth <- mkTask "fourth task" TaskPriorityHigh
+      first <- mkTask dummyWorkspaceId "first task" TaskPriorityMedium 
+      second <- mkTask dummyWorkspaceId "second task" TaskPriorityUrgent
+      third <- mkTask dummyWorkspaceId "third task" TaskPriorityLow
+      fourth <- mkTask dummyWorkspaceId "fourth task" TaskPriorityHigh
 
       let tasks = [first, second, third, fourth]
       let expected = [third, first, fourth, second]
@@ -66,12 +72,12 @@ spec = do
 
   describe "filterTasksByPriority" $ do
     it "takes an list of Tasks and filters by provided TaskPriority" $ do
-      first <- mkTask "first task" TaskPriorityMedium 
-      second <- mkTask "second task" TaskPriorityUrgent
-      third <- mkTask "third task" TaskPriorityLow
-      fourth <- mkTask "fourth task" TaskPriorityHigh
-      fifth <- mkTask "fifth task" TaskPriorityLow
-      sixth <- mkTask "sixth task" TaskPriorityNone 
+      first <- mkTask dummyWorkspaceId "first task" TaskPriorityMedium 
+      second <- mkTask dummyWorkspaceId "second task" TaskPriorityUrgent
+      third <- mkTask dummyWorkspaceId "third task" TaskPriorityLow
+      fourth <- mkTask dummyWorkspaceId "fourth task" TaskPriorityHigh
+      fifth <- mkTask dummyWorkspaceId "fifth task" TaskPriorityLow
+      sixth <- mkTask dummyWorkspaceId "sixth task" TaskPriorityNone 
 
       let tasks = [fourth, sixth, second, fifth, third, first]
 
@@ -83,12 +89,12 @@ spec = do
 
   describe "filterTasksWithoutPriority" $ do
     it "takes an list of Tasks and filters out by provided TaskPriority" $ do
-      first <- mkTask "first task" TaskPriorityMedium 
-      second <- mkTask "second task" TaskPriorityUrgent
-      third <- mkTask "third task" TaskPriorityLow
-      fourth <- mkTask "fourth task" TaskPriorityHigh
-      fifth <- mkTask "fifth task" TaskPriorityLow
-      sixth <- mkTask "sixth task" TaskPriorityNone 
+      first <- mkTask dummyWorkspaceId "first task" TaskPriorityMedium 
+      second <- mkTask dummyWorkspaceId "second task" TaskPriorityUrgent
+      third <- mkTask dummyWorkspaceId "third task" TaskPriorityLow
+      fourth <- mkTask dummyWorkspaceId "fourth task" TaskPriorityHigh
+      fifth <- mkTask dummyWorkspaceId "fifth task" TaskPriorityLow
+      sixth <- mkTask dummyWorkspaceId "sixth task" TaskPriorityNone 
 
       let tasks = [fourth, sixth, second, fifth, third, first]
 
