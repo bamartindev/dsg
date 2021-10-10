@@ -2,6 +2,8 @@ module DSG.Persistence.SQLite
   ( createTables
   , insertNewTask
   , fetchAllTasks
+  , insertNewWorkspace
+  , fetchAllWorkspaces
   )
 where
 
@@ -10,8 +12,9 @@ import qualified Data.UUID as UUID
 import qualified Data.Text as T
 import Database.SQLite.Simple
 
+import DSG.Domain.Workspace (Workspace(..))
 import DSG.Domain.Task (Task(..))
-
+import DSG.Persistence.DAO.Workspace
 
 dbname :: String
 dbname = "dsg.db"
@@ -40,3 +43,18 @@ fetchAllTasks = do
   close conn
 
   return tasks
+
+insertNewWorkspace :: Workspace -> IO ()
+insertNewWorkspace ws = do
+  let wsdao = workspaceIntoDAO ws
+  conn <- open dbname
+  execute conn "INSERT INTO workspace (id, name, current_task) VALUES (?,?,?)" wsdao
+  close conn
+
+fetchAllWorkspaces :: IO [WorkspaceDAO]
+fetchAllWorkspaces = do
+  conn <- open dbname
+  wss <- query_ conn "SELECT * FROM workspace"
+  close conn
+
+  return wss
